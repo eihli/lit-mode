@@ -1,13 +1,14 @@
-# Srcweave Literate Mode[]{#c0}
+# Srcweave Literate Mode<span id="c0"></span>
 
 By: [**Eric Ihli**](https://owoga.com)
 
 View the final code and other resources in the [GitHub
 repo](https://github.com/eihli/lit-mode).
 
-I'm going to follow the
+I’m going to follow the
 [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutorial) from the
-Emacs Wiki.
+Emacs Wiki to create mode for
+[srcweave](https://github.com/justinmeiners/srcweave).
 
 1.  [The entry function](#s0:0)
 2.  [Preamble](#s0:1)
@@ -17,36 +18,42 @@ Emacs Wiki.
 > means you are reading the source code right now! Each piece of code
 > will be shown and explained thoroughly, so you can be sure nothing is
 > left out. The final code was created by
-> ["tangling"](https://github.com/justinmeiners/srcweave) the blocks of
+> [“tangling”](https://github.com/justinmeiners/srcweave) the blocks of
 > code together.
 
 First, we define some variables that all modes should define.
-'wpdl-mode-hook' allows the user to run their own code when your mode is
+‘lit-mode-hook’ allows the user to run their own code when your mode is
 run.
 
-::: code-block
-[ ***[Hooks](#hooks-block-1){#hooks-block-1}***]{.block-header}
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#hooks-block-1" id="hooks-block-1">Hooks</a>***</span>
 
 ``` prettyprint
 (defvar lit-mode-mode-hook nil)
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
 
-Now we create a keymap. This map, here called 'lit-mode-map', allows
+</div>
+
+Now we create a keymap. This map, here called ‘lit-mode-map’, allows
 both you and users to define their own keymaps. The keymap is
-immediately set to a default keymap. Then, using 'define-key', we insert
+immediately set to a default keymap. Then, using ‘define-key’, we insert
 an example keybinding into the keymap, which maps the
-'newline-and-indent' function to Control-j (which is actually the
+‘newline-and-indent’ function to Control-j (which is actually the
 default binding for this function, but is included anyway as an
 example). Of course, you may define as many keybindings as you wish.
 
 If your keymap will have very few entries, then you may want to consider
-'make-sparse-keymap' rather than 'make-keymap'.
+‘make-sparse-keymap’ rather than ‘make-keymap’.
 
-::: code-block
-[ ***[Keymap](#keymap-block-3){#keymap-block-3}***]{.block-header}
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#keymap-block-3" id="keymap-block-3">Keymap</a>***</span>
 
 ``` prettyprint
 (defvar lit-mode-map
@@ -56,81 +63,97 @@ If your keymap will have very few entries, then you may want to consider
   "Keymap for Srcweave Literate major mode.")
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
 
-Here, we append a definition to 'auto-mode-alist'. This tells emacs that
+</div>
+
+Here, we append a definition to ‘auto-mode-alist’. This tells emacs that
 when a buffer with a name ending with .wpd is opened, then wpdl-mode
 should be started in that buffer. Some modes leave this step to the
 user.
 
-::: code-block
-[ ***[Autoload](#autoload-block-5){#autoload-block-5}***]{.block-header}
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#autoload-block-5" id="autoload-block-5">Autoload</a>***</span>
 
 ``` prettyprint
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+
+</div>
 
 Now we have defined our minimal set of keywords for emacs to highlight.
-A 'font-lock-keyword' variable is a list of keywords to highlight. There
+A ‘font-lock-keyword’ variable is a list of keywords to highlight. There
 are many ways to specify this list. I have used the form (matcher .
 facename). With this form, I have specified a pattern to match, and then
 a face name to use for the actual highlighting.
 
-There are two elements to my list: the first element matches WPDL
-language keywords, and the second element matches WPDL identifier names
-(variable names). I have selected the appropriate font-lock face names
-for each type of keyword ('font-lock-builtin-face' and
-'font-lock-variable-name-face', respectively).
+There are two elements to my list: the first element matches srcweave
+code block syntax, and the second element matches srcweave reference
+names (the name used to include the contents of one source code block
+into another). I’m going to borrow some existing faces with names
+close-enough to what I want. For the open and close of a code block, I’m
+going to use `font-lock-doc-markup-face`. And for the code block
+reference names, I’ll use `font-lock-constant-face`.
 
-For my keyword list, I've selected those WPDL keywords which would
+For my keyword list, I’ve selected those WPDL keywords which would
 benefit most from being highlighted: keywords that delimit blocks of
 information. One may notice that the regexp used to specify these
 keywords is optimized. I did not have to do this by hand. Emacs provides
-the 'regexp-opt' function to save you from the tedious work of creating
-complicated regexps. 'regexp-opt' takes a list of strings and an
+the ‘regexp-opt’ function to save you from the tedious work of creating
+complicated regexps. ‘regexp-opt’ takes a list of strings and an
 additional optional argument. This optional argument controls whether or
 not we want to wrap the entire regexp in parens. In our case, we do. For
 example, the following expression:
 
-::: code-block
-[ ***[Syntax
-regex](#syntax-regex-block-7){#syntax-regex-block-7}***]{.block-header}
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#syntax-regex-block-7" id="syntax-regex-block-7">Syntax
+regex</a>***</span>
 
 ``` prettyprint
 (regexp-opt '("---")' t)
 "\\(---\\)"
 ```
-:::
 
-::: code-block
-[ ***[Syntax
-highlighting](#syntax-highlighting-block-9){#syntax-highlighting-block-9}***]{.block-header}
+</div>
+
+<div class="code-block">
+
+<span class="block-header"> ***<a href="#syntax-highlighting-block-9"
+id="syntax-highlighting-block-9">Syntax highlighting</a>***</span>
 
 ``` prettyprint
 (defconst lit-font-lock-code-blocks
   (list
-   '("\\(---\\)". font-lock-builtin-face)
-   '("---.*\\('\\w+'\\)" . font-lock-variable-name-face)
-   '("@{\\(\w+\\)}" . font-lock-variable-name-face))
+   '("^\\(---\\)". font-lock-doc-markup-face)
+   '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
+   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
 
-## 1. The entry function[]{#s0:0}
+</div>
+
+## 1. The entry function<span id="s0:0"></span>
 
 Finally, we will create the function that will be called by Emacs when
 the mode is started.
 
-::: code-block
-[ ***[Entry
-function](#entry-function-block-11){#entry-function-block-11}***]{.block-header}
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#entry-function-block-11" id="entry-function-block-11">Entry
+function</a>***</span>
 
 ``` prettyprint
 (defun lit-mode ()
@@ -144,12 +167,15 @@ function](#entry-function-block-11){#entry-function-block-11}***]{.block-header}
   (run-hooks 'lit-mode-hook))
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
 
-::: code-block
-[
-***[/lit-mode.el](#-lit-mode.el-block-13){#-lit-mode.el-block-13}***]{.block-header}
+</div>
+
+<div class="code-block">
+
+<span class="block-header"> ***<a href="#-lit-mode.el-block-13"
+id="-lit-mode.el-block-13">/lit-mode.el</a>***</span>
 
 ``` prettyprint
 @{Preamble}
@@ -162,13 +188,15 @@ function](#entry-function-block-11){#entry-function-block-11}***]{.block-header}
 (provide 'lit-mode)
 @{Postamble}
 ```
-:::
 
-## 2. Preamble[]{#s0:1}
+</div>
 
-::: code-block
-[
-***[Preamble](#preamble-block-15){#preamble-block-15}***]{.block-header}
+## 2. Preamble<span id="s0:1"></span>
+
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#preamble-block-15" id="preamble-block-15">Preamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
@@ -193,18 +221,23 @@ function](#entry-function-block-11){#entry-function-block-11}***]{.block-header}
 ;;; Code:
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+
+</div>
 
 ### Postamble
 
-::: code-block
-[
-***[Postamble](#postamble-block-17){#postamble-block-17}***]{.block-header}
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#postamble-block-17" id="postamble-block-17">Postamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el ends here
 ```
 
-[Used by [1](#-lit-mode.el-block-13 "/lit-mode.el")]{.small}
-:::
+<span class="small">Used by
+[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+
+</div>
