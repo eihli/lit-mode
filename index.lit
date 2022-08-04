@@ -4,7 +4,7 @@ By: [**Eric Ihli**](https://owoga.com)
 
 View the final code and other resources in the [GitHub repo](https://github.com/eihli/lit-mode).
 
-I'm going to follow the [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutorial) from the Emacs Wiki.
+I'm going to follow the [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutorial) from the Emacs Wiki to create mode for [srcweave](https://github.com/justinmeiners/srcweave).
 
 @toc
 
@@ -13,7 +13,7 @@ I'm going to follow the [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutor
 > Each piece of code will be shown and explained thoroughly, so you can be sure nothing is left out.
 > The final code was created by ["tangling"](https://github.com/justinmeiners/srcweave) the blocks of code together.
 
-First, we define some variables that all modes should define. ‘wpdl-mode-hook’ allows the user to run their own code when your mode is run.
+First, we define some variables that all modes should define. ‘lit-mode-hook’ allows the user to run their own code when your mode is run.
 
 --- Hooks
 (defvar lit-mode-mode-hook nil)
@@ -40,7 +40,7 @@ Here, we append a definition to ‘auto-mode-alist’. This tells emacs that whe
 
 Now we have defined our minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I have used the form (matcher . facename). With this form, I have specified a pattern to match, and then a face name to use for the actual highlighting.
 
-There are two elements to my list: the first element matches WPDL language keywords, and the second element matches WPDL identifier names (variable names). I have selected the appropriate font-lock face names for each type of keyword (‘font-lock-builtin-face’ and ‘font-lock-variable-name-face’, respectively).
+There are two elements to my list: the first element matches srcweave code block syntax, and the second element matches srcweave reference names (the name used to include the contents of one source code block into another). I'm going to borrow some existing faces with names close-enough to what I want. For the open and close of a code block, I'm going to use `font-lock-doc-markup-face`. And for the code block reference names, I'll use `font-lock-constant-face`.
 
 For my keyword list, I’ve selected those WPDL keywords which would benefit most from being highlighted: keywords that delimit blocks of information. One may notice that the regexp used to specify these keywords is optimized. I did not have to do this by hand. Emacs provides the ‘regexp-opt’ function to save you from the tedious work of creating complicated regexps. ‘regexp-opt’ takes a list of strings and an additional optional argument. This optional argument controls whether or not we want to wrap the entire regexp in parens. In our case, we do. For example, the following expression:
 
@@ -52,9 +52,9 @@ For my keyword list, I’ve selected those WPDL keywords which would benefit mos
 --- Syntax highlighting
 (defconst lit-font-lock-code-blocks
   (list
-   '("\\(---\\)". font-lock-builtin-face)
-   '("---.*\\('\\w+'\\)" . font-lock-variable-name-face)
-   '("@@{\\(\w+\\)}" . font-lock-variable-name-face))
+   '("^\\(---\\)". font-lock-doc-markup-face)
+   '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
+   '("@@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 ---
 

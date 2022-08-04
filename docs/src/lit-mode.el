@@ -28,9 +28,9 @@
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 (defconst lit-font-lock-code-blocks
   (list
-   '("\\(---\\)". font-lock-builtin-face)
-   '("---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-variable-name-face))
-   '("@{\\([^}]+\\)}" . (1 font-lock-variable-name-face)))
+   '("^\\(---\\)". font-lock-doc-markup-face)
+   '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
+   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 (defun lit-mode ()
   "Major mode for editing srcweave literate files."

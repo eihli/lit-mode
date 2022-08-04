@@ -20,7 +20,7 @@
 
 <p>View the final code and other resources in the <a href="https://github.com/eihli/lit-mode">GitHub repo</a>.</p>
 
-<p>I&rsquo;m going to follow the <a href="https://www.emacswiki.org/emacs/ModeTutorial">ModeTutorial</a> from the Emacs Wiki.</p>
+<p>I&rsquo;m going to follow the <a href="https://www.emacswiki.org/emacs/ModeTutorial">ModeTutorial</a> from the Emacs Wiki to create mode for <a href="https://github.com/justinmeiners/srcweave">srcweave</a>.</p>
 
 <ol><li><a href="#s0:0">The entry function</a></li><li><a href="#s0:1">Preamble</a></li></ol>
 
@@ -30,7 +30,7 @@ This means you are reading the source code right now!
 Each piece of code will be shown and explained thoroughly, so you can be sure nothing is left out.
 The final code was created by <a href="https://github.com/justinmeiners/srcweave">&ldquo;tangling&rdquo;</a> the blocks of code together.</p></blockquote>
 
-<p>First, we define some variables that all modes should define. ‘wpdl-mode-hook’ allows the user to run their own code when your mode is run.</p>
+<p>First, we define some variables that all modes should define. ‘lit-mode-hook’ allows the user to run their own code when your mode is run.</p>
 
 <div class="code-block">
 <span class="block-header">
@@ -69,7 +69,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 
 <p>Now we have defined our minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I have used the form (matcher . facename). With this form, I have specified a pattern to match, and then a face name to use for the actual highlighting.</p>
 
-<p>There are two elements to my list: the first element matches WPDL language keywords, and the second element matches WPDL identifier names (variable names). I have selected the appropriate font-lock face names for each type of keyword (‘font-lock-builtin-face’ and ‘font-lock-variable-name-face’, respectively).</p>
+<p>There are two elements to my list: the first element matches srcweave code block syntax, and the second element matches srcweave reference names (the name used to include the contents of one source code block into another). I&rsquo;m going to borrow some existing faces with names close-enough to what I want. For the open and close of a code block, I&rsquo;m going to use <code>font-lock-doc-markup-face</code>. And for the code block reference names, I&rsquo;ll use <code>font-lock-constant-face</code>.</p>
 
 <p>For my keyword list, I’ve selected those WPDL keywords which would benefit most from being highlighted: keywords that delimit blocks of information. One may notice that the regexp used to specify these keywords is optimized. I did not have to do this by hand. Emacs provides the ‘regexp-opt’ function to save you from the tedious work of creating complicated regexps. ‘regexp-opt’ takes a list of strings and an additional optional argument. This optional argument controls whether or not we want to wrap the entire regexp in parens. In our case, we do. For example, the following expression:</p>
 
@@ -89,9 +89,9 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <strong class="block-title"><em><a id="syntax-highlighting-block-9" href="#syntax-highlighting-block-9">Syntax highlighting</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defconst lit-font-lock-code-blocks
   (list
-   '("\\(---\\)". font-lock-builtin-face)
-   '("---.*\\('\\w+'\\)" . font-lock-variable-name-face)
-   '("@{\\(\w+\\)}" . font-lock-variable-name-face))
+   '("^\\(---\\)". font-lock-doc-markup-face)
+   '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
+   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
