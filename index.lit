@@ -16,11 +16,15 @@ Thanks to [Scott Andrew Borton](https://www.emacswiki.org/emacs/ScottAndrewBorto
 > Each piece of code will be shown and explained thoroughly, so you can be sure nothing is left out.
 > The final code was created by ["tangling"](https://github.com/justinmeiners/srcweave) the blocks of code together.
 
+# Hooks
+
 First, we define some variables that all modes should define. ‘lit-mode-hook’ allows the user to run their own code when your mode is run.
 
 --- Hooks
 (defvar lit-mode-mode-hook nil)
 ---
+
+# Keymap
 
 Now we create a keymap. This map, here called ‘lit-mode-map’, allows both you and users to define their own keymaps. The keymap is immediately set to a default keymap. Then, using ‘define-key’, we insert an example keybinding into the keymap, which maps the ‘newline-and-indent’ function to Control-j (which is actually the default binding for this function, but is included anyway as an example). Of course, you may define as many keybindings as you wish.
 
@@ -34,12 +38,16 @@ If your keymap will have very few entries, then you may want to consider ‘make
   "Keymap for Srcweave Literate major mode.")
 ---
 
+# Autoload
+
 Here, we append a definition to ‘auto-mode-alist’. This tells emacs that when a buffer with a name ending with .wpd is opened, then wpdl-mode should be started in that buffer. Some modes leave this step to the user.
 
 --- Autoload
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 ---
+
+# Syntax highlighting
 
 Next let's define a minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I'll use the form (matcher . facename). With this form, I'll specify a pattern to match, and then a face name to use for the actual highlighting.
 
@@ -69,7 +77,7 @@ This optional argument controls whether or not we want to wrap the entire regexp
 In our case, we do.
 For example, the following expression:
 
-## The entry function
+# The entry function
 
 Finally, we will create the function that will be called by Emacs when the mode is started.
 
@@ -97,7 +105,7 @@ Finally, we will create the function that will be called by Emacs when the mode 
 @{Postamble}
 ---
 
-## Preamble
+# Preamble
 
 --- Preamble
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-

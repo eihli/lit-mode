@@ -15,8 +15,13 @@ Emacs Wiki. Thanks to [Scott Andrew
 Borton](https://www.emacswiki.org/emacs/ScottAndrewBorton) for that
 tutorial.
 
-1.  [The entry function](#s0:0)
-2.  [Preamble](#s0:1)
+1.  [Srcweave Literate Mode](#c0)
+2.  [Hooks](#c1)
+3.  [Keymap](#c2)
+4.  [Autoload](#c3)
+5.  [Syntax highlighting](#c4)
+6.  [The entry function](#c5)
+7.  [Preamble](#c6)
 
 > **Note:** This tutorial is a [literate
 > program](https://en.wikipedia.org/wiki/Literate_programming). This
@@ -25,6 +30,8 @@ tutorial.
 > left out. The final code was created by
 > [“tangling”](https://github.com/justinmeiners/srcweave) the blocks of
 > code together.
+
+# Hooks<span id="c1"></span>
 
 First, we define some variables that all modes should define.
 ‘lit-mode-hook’ allows the user to run their own code when your mode is
@@ -43,6 +50,8 @@ run.
 [1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
+
+# Keymap<span id="c2"></span>
 
 Now we create a keymap. This map, here called ‘lit-mode-map’, allows
 both you and users to define their own keymaps. The keymap is
@@ -73,6 +82,8 @@ If your keymap will have very few entries, then you may want to consider
 
 </div>
 
+# Autoload<span id="c3"></span>
+
 Here, we append a definition to ‘auto-mode-alist’. This tells emacs that
 when a buffer with a name ending with .wpd is opened, then wpdl-mode
 should be started in that buffer. Some modes leave this step to the
@@ -92,6 +103,8 @@ user.
 [1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
+
+# Syntax highlighting<span id="c4"></span>
 
 Next let’s define a minimal set of keywords for emacs to highlight. A
 ‘font-lock-keyword’ variable is a list of keywords to highlight. There
@@ -139,7 +152,7 @@ additional optional argument. This optional argument controls whether or
 not we want to wrap the entire regexp in parens. In our case, we do. For
 example, the following expression:
 
-## 1. The entry function<span id="s0:0"></span>
+# The entry function<span id="c5"></span>
 
 Finally, we will create the function that will be called by Emacs when
 the mode is started.
@@ -186,7 +199,7 @@ id="-lit-mode.el-block-11">/lit-mode.el</a>***</span>
 
 </div>
 
-## 2. Preamble<span id="s0:1"></span>
+# Preamble<span id="c6"></span>
 
 <div class="code-block">
 

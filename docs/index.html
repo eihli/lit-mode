@@ -25,13 +25,16 @@
 <p>This will be a bit of a rehash of <a href="https://www.emacswiki.org/emacs/ModeTutorial">ModeTutorial</a> from the Emacs Wiki.
 Thanks to <a href="https://www.emacswiki.org/emacs/ScottAndrewBorton">Scott Andrew Borton</a> for that tutorial.</p>
 
-<ol><li><a href="#s0:0">The entry function</a></li><li><a href="#s0:1">Preamble</a></li></ol>
+<ol><li><a href="#c0">Srcweave Literate Mode</a><ol></ol></li><li><a href="#c1">Hooks</a><ol></ol></li><li><a href="#c2">Keymap</a><ol></ol></li><li><a href="#c3">Autoload</a><ol></ol></li><li><a href="#c4">Syntax highlighting</a><ol></ol></li><li><a href="#c5">The entry function</a><ol></ol></li><li><a href="#c6">Preamble</a><ol></ol></li></ol>
 
 
 <blockquote><p><strong>Note:</strong> This tutorial is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>.
 This means you are reading the source code right now!
 Each piece of code will be shown and explained thoroughly, so you can be sure nothing is left out.
 The final code was created by <a href="https://github.com/justinmeiners/srcweave">&ldquo;tangling&rdquo;</a> the blocks of code together.</p></blockquote>
+
+<h1>Hooks<a id="c1"></a></h1>
+
 
 <p>First, we define some variables that all modes should define. ‘lit-mode-hook’ allows the user to run their own code when your mode is run.</p>
 
@@ -41,6 +44,11 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <pre class="prettyprint"><code class="">(defvar lit-mode-mode-hook nil)
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
+
+
+
+
+<h1>Keymap<a id="c2"></a></h1>
 
 
 <p>Now we create a keymap. This map, here called ‘lit-mode-map’, allows both you and users to define their own keymaps. The keymap is immediately set to a default keymap. Then, using ‘define-key’, we insert an example keybinding into the keymap, which maps the ‘newline-and-indent’ function to Control-j (which is actually the default binding for this function, but is included anyway as an example). Of course, you may define as many keybindings as you wish.</p>
@@ -59,6 +67,11 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
+
+
+<h1>Autoload<a id="c3"></a></h1>
+
+
 <p>Here, we append a definition to ‘auto-mode-alist’. This tells emacs that when a buffer with a name ending with .wpd is opened, then wpdl-mode should be started in that buffer. Some modes leave this step to the user.</p>
 
 <div class="code-block">
@@ -68,6 +81,11 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
+
+
+
+
+<h1>Syntax highlighting<a id="c4"></a></h1>
 
 
 <p>Next let&rsquo;s define a minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I&rsquo;ll use the form (matcher . facename). With this form, I&rsquo;ll specify a pattern to match, and then a face name to use for the actual highlighting.</p>
@@ -102,7 +120,7 @@ This optional argument controls whether or not we want to wrap the entire regexp
 In our case, we do.
 For example, the following expression:</p>
 
-<h2>1. The entry function<a id="s0:0"></a></h2>
+<h1>The entry function<a id="c5"></a></h1>
 
 
 <p>Finally, we will create the function that will be called by Emacs when the mode is started.</p>
@@ -143,7 +161,7 @@ For example, the following expression:</p>
 
 
 
-<h2>2. Preamble<a id="s0:1"></a></h2>
+<h1>Preamble<a id="c6"></a></h1>
 
 
 
