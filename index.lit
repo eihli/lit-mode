@@ -4,7 +4,10 @@ By: [**Eric Ihli**](https://owoga.com)
 
 View the final code and other resources in the [GitHub repo](https://github.com/eihli/lit-mode).
 
-I'm going to follow the [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutorial) from the Emacs Wiki to create mode for [srcweave](https://github.com/justinmeiners/srcweave).
+This is an Emacs major-mode for literate programming in [srcweave](https://github.com/justinmeiners/srcweave), _written as a literate program using srcweave_.
+
+This will be a bit of a rehash of [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutorial) from the Emacs Wiki.
+Thanks to [Scott Andrew Borton](https://www.emacswiki.org/emacs/ScottAndrewBorton) for that tutorial.
 
 @toc
 

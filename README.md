@@ -5,10 +5,15 @@ By: [**Eric Ihli**](https://owoga.com)
 View the final code and other resources in the [GitHub
 repo](https://github.com/eihli/lit-mode).
 
-I’m going to follow the
+This is an Emacs major-mode for literate programming in
+[srcweave](https://github.com/justinmeiners/srcweave), *written as a
+literate program using srcweave*.
+
+This will be a bit of a rehash of
 [ModeTutorial](https://www.emacswiki.org/emacs/ModeTutorial) from the
-Emacs Wiki to create mode for
-[srcweave](https://github.com/justinmeiners/srcweave).
+Emacs Wiki. Thanks to [Scott Andrew
+Borton](https://www.emacswiki.org/emacs/ScottAndrewBorton) for that
+tutorial.
 
 1.  [The entry function](#s0:0)
 2.  [Preamble](#s0:1)

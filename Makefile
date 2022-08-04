@@ -12,8 +12,9 @@ docs/google-code-prettify:
 docs/src/lit-mode.el: index.lit
 	srcweave --tangle ./docs/src/ $<
 
-docs/index.html: index.lit
+docs/index.html README.md: index.lit
 	srcweave --weave ./docs/ --formatter srcweave-format $<
+	pandoc --from html --to gfm docs/index.html -o README.md
 
 .PHONY:
 clean:
