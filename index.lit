@@ -38,16 +38,7 @@ Here, we append a definition to ‘auto-mode-alist’. This tells emacs that whe
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 ---
 
-Now we have defined our minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I have used the form (matcher . facename). With this form, I have specified a pattern to match, and then a face name to use for the actual highlighting.
-
-There are two elements to my list: the first element matches srcweave code block syntax, and the second element matches srcweave reference names (the name used to include the contents of one source code block into another). I'm going to borrow some existing faces with names close-enough to what I want. For the open and close of a code block, I'm going to use `font-lock-doc-markup-face`. And for the code block reference names, I'll use `font-lock-constant-face`.
-
-For my keyword list, I’ve selected those WPDL keywords which would benefit most from being highlighted: keywords that delimit blocks of information. One may notice that the regexp used to specify these keywords is optimized. I did not have to do this by hand. Emacs provides the ‘regexp-opt’ function to save you from the tedious work of creating complicated regexps. ‘regexp-opt’ takes a list of strings and an additional optional argument. This optional argument controls whether or not we want to wrap the entire regexp in parens. In our case, we do. For example, the following expression:
-
---- Syntax regex
-(regexp-opt '("---")' t)
-"\\(---\\)"
----
+Next let's define a minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I'll use the form (matcher . facename). With this form, I'll specify a pattern to match, and then a face name to use for the actual highlighting.
 
 --- Syntax highlighting
 (defconst lit-font-lock-code-blocks
@@ -57,6 +48,23 @@ For my keyword list, I’ve selected those WPDL keywords which would benefit mos
    '("@@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 ---
+
+There are three elements to my list: the first element matches srcweave code block syntax, `---`.
+The second element matches the declaration of the reference name (the name used to include the contents of one source code block into another).
+And the third matches the _use_ of the reference name (e.g. `@@{SomeCodeBlock}`).
+
+I'm going to borrow some existing faces with names close-enough to what I want.
+For the open and close of a code block, I'm going to use `font-lock-doc-markup-face`.
+For the code block reference names, I'll use `font-lock-constant-face`.
+
+For my keyword list, I’ve selected those WPDL keywords which would benefit most from being highlighted: keywords that delimit blocks of information.
+One may notice that the regexp used to specify these keywords is optimized.
+I did not have to do this by hand.
+Emacs provides the ‘regexp-opt’ function to save you from the tedious work of creating complicated regexps.
+‘regexp-opt’ takes a list of strings and an additional optional argument.
+This optional argument controls whether or not we want to wrap the entire regexp in parens.
+In our case, we do.
+For example, the following expression:
 
 ## The entry function
 

@@ -37,7 +37,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <strong class="block-title"><em><a id="hooks-block-1" href="#hooks-block-1">Hooks</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defvar lit-mode-mode-hook nil)
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
 <p>Now we create a keymap. This map, here called ‘lit-mode-map’, allows both you and users to define their own keymaps. The keymap is immediately set to a default keymap. Then, using ‘define-key’, we insert an example keybinding into the keymap, which maps the ‘newline-and-indent’ function to Control-j (which is actually the default binding for this function, but is included anyway as an example). Of course, you may define as many keybindings as you wish.</p>
@@ -53,7 +53,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
     map)
   "Keymap for Srcweave Literate major mode.")
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
 <p>Here, we append a definition to ‘auto-mode-alist’. This tells emacs that when a buffer with a name ending with .wpd is opened, then wpdl-mode should be started in that buffer. Some modes leave this step to the user.</p>
@@ -64,29 +64,14 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <pre class="prettyprint"><code class="">;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
-<p>Now we have defined our minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I have used the form (matcher . facename). With this form, I have specified a pattern to match, and then a face name to use for the actual highlighting.</p>
-
-<p>There are two elements to my list: the first element matches srcweave code block syntax, and the second element matches srcweave reference names (the name used to include the contents of one source code block into another). I&rsquo;m going to borrow some existing faces with names close-enough to what I want. For the open and close of a code block, I&rsquo;m going to use <code>font-lock-doc-markup-face</code>. And for the code block reference names, I&rsquo;ll use <code>font-lock-constant-face</code>.</p>
-
-<p>For my keyword list, I’ve selected those WPDL keywords which would benefit most from being highlighted: keywords that delimit blocks of information. One may notice that the regexp used to specify these keywords is optimized. I did not have to do this by hand. Emacs provides the ‘regexp-opt’ function to save you from the tedious work of creating complicated regexps. ‘regexp-opt’ takes a list of strings and an additional optional argument. This optional argument controls whether or not we want to wrap the entire regexp in parens. In our case, we do. For example, the following expression:</p>
+<p>Next let&rsquo;s define a minimal set of keywords for emacs to highlight. A ‘font-lock-keyword’ variable is a list of keywords to highlight. There are many ways to specify this list. I&rsquo;ll use the form (matcher . facename). With this form, I&rsquo;ll specify a pattern to match, and then a face name to use for the actual highlighting.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="syntax-regex-block-7" href="#syntax-regex-block-7">Syntax regex</a></em></strong></span>
-<pre class="prettyprint"><code class="">(regexp-opt '("---")' t)
-"\\(---\\)"
-</code></pre>
-</div>
-
-
-
-
-<div class="code-block">
-<span class="block-header">
-<strong class="block-title"><em><a id="syntax-highlighting-block-9" href="#syntax-highlighting-block-9">Syntax highlighting</a></em></strong></span>
+<strong class="block-title"><em><a id="syntax-highlighting-block-7" href="#syntax-highlighting-block-7">Syntax highlighting</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defconst lit-font-lock-code-blocks
   (list
    '("^\\(---\\)". font-lock-doc-markup-face)
@@ -94,10 +79,25 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
    '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
+<p>There are three elements to my list: the first element matches srcweave code block syntax, <code>---</code>.
+The second element matches the declaration of the reference name (the name used to include the contents of one source code block into another).
+And the third matches the <em>use</em> of the reference name (e.g. <code>@{SomeCodeBlock}</code>).</p>
 
+<p>I&rsquo;m going to borrow some existing faces with names close-enough to what I want.
+For the open and close of a code block, I&rsquo;m going to use <code>font-lock-doc-markup-face</code>.
+For the code block reference names, I&rsquo;ll use <code>font-lock-constant-face</code>.</p>
+
+<p>For my keyword list, I’ve selected those WPDL keywords which would benefit most from being highlighted: keywords that delimit blocks of information.
+One may notice that the regexp used to specify these keywords is optimized.
+I did not have to do this by hand.
+Emacs provides the ‘regexp-opt’ function to save you from the tedious work of creating complicated regexps.
+‘regexp-opt’ takes a list of strings and an additional optional argument.
+This optional argument controls whether or not we want to wrap the entire regexp in parens.
+In our case, we do.
+For example, the following expression:</p>
 
 <h2>1. The entry function<a id="s0:0"></a></h2>
 
@@ -106,7 +106,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="entry-function-block-11" href="#entry-function-block-11">Entry function</a></em></strong></span>
+<strong class="block-title"><em><a id="entry-function-block-9" href="#entry-function-block-9">Entry function</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defun lit-mode ()
   "Major mode for editing srcweave literate files."
   (interactive)
@@ -117,23 +117,23 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
   (setq mode-name "Lit")
   (run-hooks 'lit-mode-hook))
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="-lit-mode.el-block-13" href="#-lit-mode.el-block-13">/lit-mode.el</a></em></strong></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#preamble-block-15">@{Preamble}</a></em>
+<strong class="block-title"><em><a id="-lit-mode.el-block-11" href="#-lit-mode.el-block-11">/lit-mode.el</a></em></strong></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#preamble-block-13">@{Preamble}</a></em>
 <em class="block-link nocode" title=""><a href="#hooks-block-1">@{Hooks}</a></em>
 <em class="block-link nocode" title=""><a href="#keymap-block-3">@{Keymap}</a></em>
 <em class="block-link nocode" title=""><a href="#autoload-block-5">@{Autoload}</a></em>
-<em class="block-link nocode" title=""><a href="#syntax-highlighting-block-9">@{Syntax highlighting}</a></em>
-<em class="block-link nocode" title=""><a href="#entry-function-block-11">@{Entry function}</a></em>
+<em class="block-link nocode" title=""><a href="#syntax-highlighting-block-7">@{Syntax highlighting}</a></em>
+<em class="block-link nocode" title=""><a href="#entry-function-block-9">@{Entry function}</a></em>
 
 (provide 'lit-mode)
-<em class="block-link nocode" title=""><a href="#postamble-block-17">@{Postamble}</a></em>
+<em class="block-link nocode" title=""><a href="#postamble-block-15">@{Postamble}</a></em>
 </code></pre>
 </div>
 
@@ -147,7 +147,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="preamble-block-15" href="#preamble-block-15">Preamble</a></em></strong></span>
+<strong class="block-title"><em><a id="preamble-block-13" href="#preamble-block-13">Preamble</a></em></strong></span>
 <pre class="prettyprint"><code class="">;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2022 Eric Ihli
@@ -169,17 +169,17 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 ;;
 ;;; Code:
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 
 <h3>Postamble</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="postamble-block-17" href="#postamble-block-17">Postamble</a></em></strong></span>
+<strong class="block-title"><em><a id="postamble-block-15" href="#postamble-block-15">Postamble</a></em></strong></span>
 <pre class="prettyprint"><code class="">;;; lit-mode.el ends here
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-13" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-11" title="/lit-mode.el">1</a> </small></p></div>
 
 </body>
 </html>

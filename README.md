@@ -35,7 +35,7 @@ run.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
 
@@ -64,7 +64,7 @@ If your keymap will have very few entries, then you may want to consider
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
 
@@ -84,51 +84,20 @@ user.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
 
-Now we have defined our minimal set of keywords for emacs to highlight.
-A ‘font-lock-keyword’ variable is a list of keywords to highlight. There
-are many ways to specify this list. I have used the form (matcher .
-facename). With this form, I have specified a pattern to match, and then
-a face name to use for the actual highlighting.
-
-There are two elements to my list: the first element matches srcweave
-code block syntax, and the second element matches srcweave reference
-names (the name used to include the contents of one source code block
-into another). I’m going to borrow some existing faces with names
-close-enough to what I want. For the open and close of a code block, I’m
-going to use `font-lock-doc-markup-face`. And for the code block
-reference names, I’ll use `font-lock-constant-face`.
-
-For my keyword list, I’ve selected those WPDL keywords which would
-benefit most from being highlighted: keywords that delimit blocks of
-information. One may notice that the regexp used to specify these
-keywords is optimized. I did not have to do this by hand. Emacs provides
-the ‘regexp-opt’ function to save you from the tedious work of creating
-complicated regexps. ‘regexp-opt’ takes a list of strings and an
-additional optional argument. This optional argument controls whether or
-not we want to wrap the entire regexp in parens. In our case, we do. For
-example, the following expression:
+Next let’s define a minimal set of keywords for emacs to highlight. A
+‘font-lock-keyword’ variable is a list of keywords to highlight. There
+are many ways to specify this list. I’ll use the form (matcher .
+facename). With this form, I’ll specify a pattern to match, and then a
+face name to use for the actual highlighting.
 
 <div class="code-block">
 
-<span class="block-header">
-***<a href="#syntax-regex-block-7" id="syntax-regex-block-7">Syntax
-regex</a>***</span>
-
-``` prettyprint
-(regexp-opt '("---")' t)
-"\\(---\\)"
-```
-
-</div>
-
-<div class="code-block">
-
-<span class="block-header"> ***<a href="#syntax-highlighting-block-9"
-id="syntax-highlighting-block-9">Syntax highlighting</a>***</span>
+<span class="block-header"> ***<a href="#syntax-highlighting-block-7"
+id="syntax-highlighting-block-7">Syntax highlighting</a>***</span>
 
 ``` prettyprint
 (defconst lit-font-lock-code-blocks
@@ -140,9 +109,30 @@ id="syntax-highlighting-block-9">Syntax highlighting</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
+
+There are three elements to my list: the first element matches srcweave
+code block syntax, `---`. The second element matches the declaration of
+the reference name (the name used to include the contents of one source
+code block into another). And the third matches the *use* of the
+reference name (e.g. `@{SomeCodeBlock}`).
+
+I’m going to borrow some existing faces with names close-enough to what
+I want. For the open and close of a code block, I’m going to use
+`font-lock-doc-markup-face`. For the code block reference names, I’ll
+use `font-lock-constant-face`.
+
+For my keyword list, I’ve selected those WPDL keywords which would
+benefit most from being highlighted: keywords that delimit blocks of
+information. One may notice that the regexp used to specify these
+keywords is optimized. I did not have to do this by hand. Emacs provides
+the ‘regexp-opt’ function to save you from the tedious work of creating
+complicated regexps. ‘regexp-opt’ takes a list of strings and an
+additional optional argument. This optional argument controls whether or
+not we want to wrap the entire regexp in parens. In our case, we do. For
+example, the following expression:
 
 ## 1. The entry function<span id="s0:0"></span>
 
@@ -152,7 +142,7 @@ the mode is started.
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#entry-function-block-11" id="entry-function-block-11">Entry
+***<a href="#entry-function-block-9" id="entry-function-block-9">Entry
 function</a>***</span>
 
 ``` prettyprint
@@ -168,14 +158,14 @@ function</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#-lit-mode.el-block-13"
-id="-lit-mode.el-block-13">/lit-mode.el</a>***</span>
+<span class="block-header"> ***<a href="#-lit-mode.el-block-11"
+id="-lit-mode.el-block-11">/lit-mode.el</a>***</span>
 
 ``` prettyprint
 @{Preamble}
@@ -196,7 +186,7 @@ id="-lit-mode.el-block-13">/lit-mode.el</a>***</span>
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#preamble-block-15" id="preamble-block-15">Preamble</a>***</span>
+***<a href="#preamble-block-13" id="preamble-block-13">Preamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
@@ -222,7 +212,7 @@ id="-lit-mode.el-block-13">/lit-mode.el</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
 
@@ -231,13 +221,13 @@ id="-lit-mode.el-block-13">/lit-mode.el</a>***</span>
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#postamble-block-17" id="postamble-block-17">Postamble</a>***</span>
+***<a href="#postamble-block-15" id="postamble-block-15">Postamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el ends here
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-13 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
 
 </div>
