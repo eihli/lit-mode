@@ -77,6 +77,50 @@ This optional argument controls whether or not we want to wrap the entire regexp
 In our case, we do.
 For example, the following expression:
 
+# Indentation
+
+Indentation is very fundamental.
+I'm going to default to tabs for indentation.
+
+--- Indentation
+(add-hook 'lit-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode t)
+            (setq tab-width 4)))
+---
+
+# Editing a code block
+
+I want to be able to take advantage of major modes for whatever language I'm working with.
+Language-specific major modes are especially nice for things like formatting and alignment.
+
+--- Editing a code block
+(defvar lit-mode-code-block-mode 'emacs-lisp-mode)
+(defvar lit-mode-saved-mode nil)
+
+(defun lit-mode-widen-advice ()
+  (funcall (symbol-function lit-mode-saved-mode))
+  (setq lit-mode-saved-mode nil)
+  (advice-remove 'widen #'lit-mode-widen-advice))
+
+(defun lit-mode-narrow-to-code-block-for-editing ()
+  (let ((beg)
+        (end))
+    (setq lit-mode-saved-mode major-mode)
+    (advice-add 'widen :after #'lit-mode-widen-advice)
+    (save-excursion
+      (search-backward-regexp "^--- ")
+      (next-line)
+      (beginning-of-line)
+      (setq beg (point))
+      (search-forward-regexp "^---$")
+      (previous-line)
+      (end-of-line)
+      (setq end (point))
+      (narrow-to-region beg end)
+      (funcall lit-mode-code-block-mode))))
+---
+
 # The entry function
 
 Finally, we will create the function that will be called by Emacs when the mode is started.

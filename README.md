@@ -20,8 +20,10 @@ tutorial.
 3.  [Keymap](#c2)
 4.  [Autoload](#c3)
 5.  [Syntax highlighting](#c4)
-6.  [The entry function](#c5)
-7.  [Preamble](#c6)
+6.  [Indentation](#c5)
+7.  [Editing a code block](#c6)
+8.  [The entry function](#c7)
+9.  [Preamble](#c8)
 
 > **Note:** This tutorial is a [literate
 > program](https://en.wikipedia.org/wiki/Literate_programming). This
@@ -47,7 +49,7 @@ run.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
 
@@ -78,7 +80,7 @@ If your keymap will have very few entries, then you may want to consider
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
 
@@ -100,7 +102,7 @@ user.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
 
@@ -127,7 +129,7 @@ id="syntax-highlighting-block-7">Syntax highlighting</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
 
@@ -152,7 +154,66 @@ additional optional argument. This optional argument controls whether or
 not we want to wrap the entire regexp in parens. In our case, we do. For
 example, the following expression:
 
-# The entry function<span id="c5"></span>
+# Indentation<span id="c5"></span>
+
+Indentation is very fundamental. I’m going to default to tabs for
+indentation.
+
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#indentation-block-9" id="indentation-block-9">Indentation</a>***</span>
+
+``` prettyprint
+(add-hook 'lit-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode t)
+            (setq tab-width 4)))
+```
+
+</div>
+
+# Editing a code block<span id="c6"></span>
+
+I want to be able to take advantage of major modes for whatever language
+I’m working with. Language-specific major modes are especially nice for
+things like formatting and alignment.
+
+<div class="code-block">
+
+<span class="block-header"> ***<a href="#editing-a-code-block-block-11"
+id="editing-a-code-block-block-11">Editing a code block</a>***</span>
+
+``` prettyprint
+(defvar lit-mode-code-block-mode 'emacs-lisp-mode)
+(defvar lit-mode-saved-mode nil)
+
+(defun lit-mode-widen-advice ()
+  (funcall (symbol-function lit-mode-saved-mode))
+  (setq lit-mode-saved-mode nil)
+  (advice-remove 'widen #'lit-mode-widen-advice))
+
+(defun lit-mode-narrow-to-code-block-for-editing ()
+  (let ((beg)
+        (end))
+    (setq lit-mode-saved-mode major-mode)
+    (advice-add 'widen :after #'lit-mode-widen-advice)
+    (save-excursion
+      (search-backward-regexp "^--- ")
+      (next-line)
+      (beginning-of-line)
+      (setq beg (point))
+      (search-forward-regexp "^---$")
+      (previous-line)
+      (end-of-line)
+      (setq end (point))
+      (narrow-to-region beg end)
+      (funcall lit-mode-code-block-mode))))
+```
+
+</div>
+
+# The entry function<span id="c7"></span>
 
 Finally, we will create the function that will be called by Emacs when
 the mode is started.
@@ -160,7 +221,7 @@ the mode is started.
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#entry-function-block-9" id="entry-function-block-9">Entry
+***<a href="#entry-function-block-13" id="entry-function-block-13">Entry
 function</a>***</span>
 
 ``` prettyprint
@@ -176,14 +237,14 @@ function</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#-lit-mode.el-block-11"
-id="-lit-mode.el-block-11">/lit-mode.el</a>***</span>
+<span class="block-header"> ***<a href="#-lit-mode.el-block-15"
+id="-lit-mode.el-block-15">/lit-mode.el</a>***</span>
 
 ``` prettyprint
 @{Preamble}
@@ -199,12 +260,12 @@ id="-lit-mode.el-block-11">/lit-mode.el</a>***</span>
 
 </div>
 
-# Preamble<span id="c6"></span>
+# Preamble<span id="c8"></span>
 
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#preamble-block-13" id="preamble-block-13">Preamble</a>***</span>
+***<a href="#preamble-block-17" id="preamble-block-17">Preamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
@@ -230,7 +291,7 @@ id="-lit-mode.el-block-11">/lit-mode.el</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
 
@@ -239,13 +300,13 @@ id="-lit-mode.el-block-11">/lit-mode.el</a>***</span>
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#postamble-block-15" id="postamble-block-15">Postamble</a>***</span>
+***<a href="#postamble-block-19" id="postamble-block-19">Postamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el ends here
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-11 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
 
 </div>
