@@ -49,7 +49,7 @@ run.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>
 
@@ -74,13 +74,26 @@ If your keymap will have very few entries, then you may want to consider
 ``` prettyprint
 (defvar lit-mode-map
   (let ((map (make-keymap)))
-    (define-key map "\C-j" 'newline-and-indent)
+    @{Keybindings}
     map)
   "Keymap for Srcweave Literate major mode.")
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+
+</div>
+
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#keybindings-block-5" id="keybindings-block-5">Keybindings</a>***</span>
+
+``` prettyprint
+(define-key map "\C-j" 'newline-and-indent)
+```
+
+<span class="small">Used by [1](#keymap-block-3 "Keymap")</span>
 
 </div>
 
@@ -94,7 +107,7 @@ user.
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#autoload-block-5" id="autoload-block-5">Autoload</a>***</span>
+***<a href="#autoload-block-7" id="autoload-block-7">Autoload</a>***</span>
 
 ``` prettyprint
 ;;;###autoload
@@ -102,7 +115,7 @@ user.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>
 
@@ -116,8 +129,8 @@ face name to use for the actual highlighting.
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#syntax-highlighting-block-7"
-id="syntax-highlighting-block-7">Syntax highlighting</a>***</span>
+<span class="block-header"> ***<a href="#syntax-highlighting-block-9"
+id="syntax-highlighting-block-9">Syntax highlighting</a>***</span>
 
 ``` prettyprint
 (defconst lit-font-lock-code-blocks
@@ -129,7 +142,7 @@ id="syntax-highlighting-block-7">Syntax highlighting</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>
 
@@ -161,8 +174,8 @@ indentation.
 
 <div class="code-block">
 
-<span class="block-header">
-***<a href="#indentation-block-9" id="indentation-block-9">Indentation</a>***</span>
+<span class="block-header"> ***<a href="#indentation-block-11"
+id="indentation-block-11">Indentation</a>***</span>
 
 ``` prettyprint
 (add-hook 'lit-mode-hook
@@ -170,6 +183,9 @@ indentation.
             (setq indent-tabs-mode t)
             (setq tab-width 4)))
 ```
+
+<span class="small">Used by
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>
 
@@ -181,8 +197,8 @@ things like formatting and alignment.
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#editing-a-code-block-block-11"
-id="editing-a-code-block-block-11">Editing a code block</a>***</span>
+<span class="block-header"> ***<a href="#editing-a-code-block-block-13"
+id="editing-a-code-block-block-13">Editing a code block</a>***</span>
 
 ``` prettyprint
 (defvar lit-mode-code-block-mode 'emacs-lisp-mode)
@@ -194,6 +210,7 @@ id="editing-a-code-block-block-11">Editing a code block</a>***</span>
   (advice-remove 'widen #'lit-mode-widen-advice))
 
 (defun lit-mode-narrow-to-code-block-for-editing ()
+  (interactive)
   (let ((beg)
         (end))
     (setq lit-mode-saved-mode major-mode)
@@ -211,6 +228,21 @@ id="editing-a-code-block-block-11">Editing a code block</a>***</span>
       (funcall lit-mode-code-block-mode))))
 ```
 
+<span class="small">Used by
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+
+</div>
+
+<div class="code-block">
+
+<span class="block-header"> ***<a href="#keybindings-block-15"
+id="keybindings-block-15">Keybindings</a>***
+[+=](#keybindings-block-5)</span>
+
+``` prettyprint
+(define-key map (kbd "SPC e e") #'lit-mode-narrow-to-code-block-for-editing)
+```
+
 </div>
 
 # The entry function<span id="c7"></span>
@@ -221,7 +253,7 @@ the mode is started.
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#entry-function-block-13" id="entry-function-block-13">Entry
+***<a href="#entry-function-block-17" id="entry-function-block-17">Entry
 function</a>***</span>
 
 ``` prettyprint
@@ -237,14 +269,14 @@ function</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#-lit-mode.el-block-15"
-id="-lit-mode.el-block-15">/lit-mode.el</a>***</span>
+<span class="block-header"> ***<a href="#-lit-mode.el-block-19"
+id="-lit-mode.el-block-19">/lit-mode.el</a>***</span>
 
 ``` prettyprint
 @{Preamble}
@@ -252,6 +284,8 @@ id="-lit-mode.el-block-15">/lit-mode.el</a>***</span>
 @{Keymap}
 @{Autoload}
 @{Syntax highlighting}
+@{Indentation}
+@{Editing a code block}
 @{Entry function}
 
 (provide 'lit-mode)
@@ -265,7 +299,7 @@ id="-lit-mode.el-block-15">/lit-mode.el</a>***</span>
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#preamble-block-17" id="preamble-block-17">Preamble</a>***</span>
+***<a href="#preamble-block-21" id="preamble-block-21">Preamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
@@ -291,7 +325,7 @@ id="-lit-mode.el-block-15">/lit-mode.el</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>
 
@@ -300,13 +334,13 @@ id="-lit-mode.el-block-15">/lit-mode.el</a>***</span>
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#postamble-block-19" id="postamble-block-19">Postamble</a>***</span>
+***<a href="#postamble-block-23" id="postamble-block-23">Postamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el ends here
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-15 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
 
 </div>

@@ -33,9 +33,13 @@ If your keymap will have very few entries, then you may want to consider ‘make
 --- Keymap
 (defvar lit-mode-map
   (let ((map (make-keymap)))
-    (define-key map "\C-j" 'newline-and-indent)
+    @{Keybindings}
     map)
   "Keymap for Srcweave Literate major mode.")
+---
+
+--- Keybindings
+(define-key map "\C-j" 'newline-and-indent)
 ---
 
 # Autoload
@@ -104,6 +108,7 @@ Language-specific major modes are especially nice for things like formatting and
   (advice-remove 'widen #'lit-mode-widen-advice))
 
 (defun lit-mode-narrow-to-code-block-for-editing ()
+  (interactive)
   (let ((beg)
         (end))
     (setq lit-mode-saved-mode major-mode)
@@ -119,6 +124,10 @@ Language-specific major modes are especially nice for things like formatting and
       (setq end (point))
       (narrow-to-region beg end)
       (funcall lit-mode-code-block-mode))))
+---
+
+--- Keybindings +=
+(define-key map (kbd "SPC e e") #'lit-mode-narrow-to-code-block-for-editing)
 ---
 
 # The entry function
@@ -143,6 +152,8 @@ Finally, we will create the function that will be called by Emacs when the mode 
 @{Keymap}
 @{Autoload}
 @{Syntax highlighting}
+@{Indentation}
+@{Editing a code block}
 @{Entry function}
 
 (provide 'lit-mode)
