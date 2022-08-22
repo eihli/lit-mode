@@ -36,7 +36,8 @@
 (add-hook 'lit-mode-hook
           (lambda ()
             (setq indent-tabs-mode t)
-			(setq indent-tabs-function #'move-to-tab-stop)
+			(setq indent-tabs-function #'tab-to-tab-stop)
+			(setq indent-line-function nil)
             (setq tab-width 4)))
 (defvar lit-mode-code-block-mode 'emacs-lisp-mode)
 (defvar lit-mode-saved-mode nil)
