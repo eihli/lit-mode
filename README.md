@@ -182,7 +182,7 @@ id="indentation-block-11">Indentation</a>***</span>
           (lambda ()
             (setq indent-tabs-mode t)
             (setq indent-tabs-function #'tab-to-tab-stop)
-            (setq indent-line-function nil)
+            (setq indent-line-function #'indent-to-left-margin)
             (setq tab-width 4)))
 ```
 

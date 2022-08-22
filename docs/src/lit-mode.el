@@ -37,7 +37,7 @@
           (lambda ()
             (setq indent-tabs-mode t)
 			(setq indent-tabs-function #'tab-to-tab-stop)
-			(setq indent-line-function nil)
+			(setq indent-line-function #'indent-to-left-margin)
             (setq tab-width 4)))
 (defvar lit-mode-code-block-mode 'emacs-lisp-mode)
 (defvar lit-mode-saved-mode nil)

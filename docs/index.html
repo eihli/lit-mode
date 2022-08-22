@@ -143,7 +143,7 @@ I&rsquo;m going to default to tabs for indentation.</p>
           (lambda ()
             (setq indent-tabs-mode t)
             (setq indent-tabs-function #'tab-to-tab-stop)
-            (setq indent-line-function nil)
+            (setq indent-line-function #'indent-to-left-margin)
             (setq tab-width 4)))
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
