@@ -142,6 +142,7 @@ I&rsquo;m going to default to tabs for indentation.</p>
 <pre class="prettyprint"><code class="">(add-hook 'lit-mode-hook
           (lambda ()
             (setq indent-tabs-mode t)
+            (setq indent-tabs-function #'move-to-tab-stop)
             (setq tab-width 4)))
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>

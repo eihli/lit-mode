@@ -90,6 +90,7 @@ I'm going to default to tabs for indentation.
 (add-hook 'lit-mode-hook
           (lambda ()
             (setq indent-tabs-mode t)
+			(setq indent-tabs-function #'move-to-tab-stop)
             (setq tab-width 4)))
 ---
 
