@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
 ;; Homepage: https://github.com/eihli/foo
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -21,8 +21,8 @@
 (defvar lit-mode-mode-hook nil)
 (defvar lit-mode-map
   (let ((map (make-keymap)))
-    (define-key map "\C-j" 'newline-and-indent)
-    (define-key map (kbd "SPC e e") #'lit-mode-narrow-to-code-block-for-editing)
+    (define-key map (kbd "C-j") 'newline-and-indent)
+    (define-key map (kbd "C-;") #'lit-mode-narrow-to-code-block-for-editing)
     map)
   "Keymap for Srcweave Literate major mode.")
 ;;;###autoload
@@ -31,13 +31,15 @@
   (list
    '("^\\(---\\)". font-lock-doc-markup-face)
    '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
-   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
+   '("@@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 (add-hook 'lit-mode-hook
           (lambda ()
+            (setq font-lock-keywords-only t)
             (setq indent-tabs-mode t)
-			(setq indent-tabs-function #'tab-to-tab-stop)
-			(setq indent-line-function #'indent-to-left-margin)
+            (setq indent-tabs-function #'tab-to-tab-stop)
+            (setq indent-line-function #'indent-to-left-margin)
+            (setq display-line-numbers-mode t)
             (setq tab-width 4)))
 (defvar lit-mode-code-block-mode 'emacs-lisp-mode)
 (defvar lit-mode-saved-mode nil)

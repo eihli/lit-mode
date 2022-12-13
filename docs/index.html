@@ -25,7 +25,7 @@
 <p>This will be a bit of a rehash of <a href="https://www.emacswiki.org/emacs/ModeTutorial">ModeTutorial</a> from the Emacs Wiki.
 Thanks to <a href="https://www.emacswiki.org/emacs/ScottAndrewBorton">Scott Andrew Borton</a> for that tutorial.</p>
 
-<ol><li><a href="#c0">Srcweave Literate Mode</a><ol></ol></li><li><a href="#c1">Hooks</a><ol></ol></li><li><a href="#c2">Keymap</a><ol></ol></li><li><a href="#c3">Autoload</a><ol></ol></li><li><a href="#c4">Syntax highlighting</a><ol></ol></li><li><a href="#c5">Indentation</a><ol></ol></li><li><a href="#c6">Editing a code block</a><ol></ol></li><li><a href="#c7">The entry function</a><ol></ol></li><li><a href="#c8">Preamble</a><ol></ol></li></ol>
+<ol><li><a href="#c0">Srcweave Literate Mode</a><ol></ol></li><li><a href="#c1">Hooks</a><ol></ol></li><li><a href="#c2">Keymap</a><ol></ol></li><li><a href="#c3">Autoload</a><ol></ol></li><li><a href="#c4">Syntax highlighting</a><ol><li><a href="#s4:0">Single " turning on highlighting</a></li></ol></li><li><a href="#c5">Indentation</a><ol></ol></li><li><a href="#c6">Editing a code block</a><ol></ol></li><li><a href="#c7">The entry function</a><ol></ol></li><li><a href="#c8">Preamble</a><ol></ol></li></ol>
 
 
 <blockquote><p><strong>Note:</strong> This tutorial is a <a href="https://en.wikipedia.org/wiki/Literate_programming">literate program</a>.
@@ -43,7 +43,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <strong class="block-title"><em><a id="hooks-block-1" href="#hooks-block-1">Hooks</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defvar lit-mode-mode-hook nil)
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 
@@ -60,11 +60,11 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <strong class="block-title"><em><a id="keymap-block-3" href="#keymap-block-3">Keymap</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defvar lit-mode-map
   (let ((map (make-keymap)))
-    <em class="block-link nocode" title=""><a href="#keybindings-block-5">@{Keybindings}</a></em>
+    <em class="block-link nocode"><a href="#keybindings-block-5">@{Keybindings}</a></em>
     map)
   "Keymap for Srcweave Literate major mode.")
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 
@@ -72,7 +72,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <div class="code-block">
 <span class="block-header">
 <strong class="block-title"><em><a id="keybindings-block-5" href="#keybindings-block-5">Keybindings</a></em></strong></span>
-<pre class="prettyprint"><code class="">(define-key map "\C-j" 'newline-and-indent)
+<pre class="prettyprint"><code class="">(define-key map (kbd "C-j") 'newline-and-indent)
 </code></pre>
 <p class="block-usages"><small>Used by <a href="#keymap-block-3" title="Keymap">1</a> </small></p></div>
 
@@ -90,7 +90,7 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
 <pre class="prettyprint"><code class="">;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.lit\\'" . lit-mode))
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 
@@ -107,15 +107,15 @@ The final code was created by <a href="https://github.com/justinmeiners/srcweave
   (list
    '("^\\(---\\)". font-lock-doc-markup-face)
    '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
-   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
+   '("@@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 <p>There are three elements to my list: the first element matches srcweave code block syntax, <code>---</code>.
 The second element matches the declaration of the reference name (the name used to include the contents of one source code block into another).
-And the third matches the <em>use</em> of the reference name (e.g. <code>@{SomeCodeBlock}</code>).</p>
+And the third matches the <em>use</em> of the reference name (e.g. <code>And the third matches the _use_ of the reference name (e.g.</code>@{SomeCodeBlock}<code>).</code>).</p>
 
 <p>I&rsquo;m going to borrow some existing faces with names close-enough to what I want.
 For the open and close of a code block, I&rsquo;m going to use <code>font-lock-doc-markup-face</code>.
@@ -130,6 +130,33 @@ This optional argument controls whether or not we want to wrap the entire regexp
 In our case, we do.
 For example, the following expression:</p>
 
+<h2>1. Single " turning on highlighting<a id="s4:0"></a></h2>
+
+
+<p>This is best demonstrated with an image.</p>
+
+<p>It&rsquo;s hard to know when a <code>"</code> should be the start of a string that we want to highlight and when it&rsquo;s just a lone character that shouldn&rsquo;t turn on highlighting.
+I&rsquo;m finding it nicer to just have it turned off.</p>
+
+<p>It wasn&rsquo;t easy to find.</p>
+
+<pre><code>(defvar font-lock-keywords-only nil
+ "Non-nil means Font Lock should not fontify comments or strings.
+ This is normally set via `font-lock-defaults'.")
+</code></pre>
+
+<p>Although this is technically a syntax highlighting topic, I&rsquo;ll put this in lit-mode-hooks so it will run when the mode is activated.</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="lit-mode-hooks-block-11" href="#lit-mode-hooks-block-11">lit-mode-hooks</a></em></strong></span>
+<pre class="prettyprint"><code class="">(setq font-lock-keywords-only t)
+</code></pre>
+<p class="block-usages"><small>Used by <a href="#indentation-block-13" title="Indentation">1</a> </small></p></div>
+
+
+
+
 <h1>Indentation<a id="c5"></a></h1>
 
 
@@ -138,15 +165,17 @@ I&rsquo;m going to default to tabs for indentation.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="indentation-block-11" href="#indentation-block-11">Indentation</a></em></strong></span>
+<strong class="block-title"><em><a id="indentation-block-13" href="#indentation-block-13">Indentation</a></em></strong></span>
 <pre class="prettyprint"><code class="">(add-hook 'lit-mode-hook
           (lambda ()
+            <em class="block-link nocode"><a href="#lit-mode-hooks-block-11">@{lit-mode-hooks}</a></em>
             (setq indent-tabs-mode t)
             (setq indent-tabs-function #'tab-to-tab-stop)
             (setq indent-line-function #'indent-to-left-margin)
+            (setq display-line-numbers-mode t)
             (setq tab-width 4)))
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 
@@ -157,9 +186,13 @@ I&rsquo;m going to default to tabs for indentation.</p>
 <p>I want to be able to take advantage of major modes for whatever language I&rsquo;m working with.
 Language-specific major modes are especially nice for things like formatting and alignment.</p>
 
+<p>This gives us syntax highlighting but gives us errors from LSP.</p>
+
+<p>https://emacs-lsp.github.io/lsp-mode/manual-language-docs/lsp-org/</p>
+
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="editing-a-code-block-block-13" href="#editing-a-code-block-block-13">Editing a code block</a></em></strong></span>
+<strong class="block-title"><em><a id="editing-a-code-block-block-15" href="#editing-a-code-block-block-15">Editing a code block</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defvar lit-mode-code-block-mode 'emacs-lisp-mode)
 (defvar lit-mode-saved-mode nil)
 
@@ -186,15 +219,63 @@ Language-specific major modes are especially nice for things like formatting and
       (narrow-to-region beg end)
       (funcall lit-mode-code-block-mode))))
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
+
+
+<p>Narrowing a buffer makes it <em>look</em> like you&rsquo;re only operating on a small section of a buffer.
+But any buffer configuration, like the mode line, operate on the entire buffer even if you can&rsquo;t see the entire buffer in your window.
+This becomes a problem if you narrow to a region of C code and then turn on c-mode.
+The mode will complain because the buffer isn&rsquo;t valid C.</p>
+
+<p>Emacs offers a <code>clone-indirect</code> that creates a copy of a buffer and changes made to one buffer get reflected in the other.
+But in hindsight. That doesn&rsquo;t work either.</p>
+
+<p>https://github.com/aaronbieber/fence-edit.el/blob/master/fence-edit.el</p>
+
+<div class="code-block">
+<span class="block-header">
+<strong class="block-title"><em><a id="editing-a-code-block-2-block-17" href="#editing-a-code-block-2-block-17">Editing a code block 2</a></em></strong></span>
+<pre class="prettyprint"><code class="">(defvar lit-mode-code-block-mode 'c-mode)
+
+(defmacro with-indirect-buffer (beg end &amp;rest body)
+  (let ((saved-mode major-mode))
+    `(with-current-buffer (clone-indirect-buffer nil nil)
+        (narrow-to-region beg end)
+        (funcall lit-mode-code-block-mode)
+        (unwind-protect
+            ,body
+        (kill-buffer (current-buffer))))))
+
+(defun lit-mode-points-surrounding-code-block ()
+ (save-excursion
+    (let ((beg)
+          (end))
+        (search-backward-regexp "^--- ")
+        (next-line)
+        (beginning-of-line)
+        (setq beg (point))
+        (search-forward-regexp "^---$")
+        (previous-line)
+        (end-of-line)
+        (setq end (point))
+        (cl-values beg end))))
+
+(defun lit-mode-edit-region-in-mode ()
+  (interactive "@r")
+  (let ((new-buffer (clone-indirect-buffer nil t)))
+    (cl-multiple-value-bind (beg end) (lit-mode-points-surrounding-code-block)
+        (narrow-to-region beg end)
+        (funcall lit-mode-code-block-mode))))
+</code></pre>
+</div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="keybindings-block-15" href="#keybindings-block-15">Keybindings</a></em></strong> <a href="#keybindings-block-5">+=</a></span>
-<pre class="prettyprint"><code class="">(define-key map (kbd "SPC e e") #'lit-mode-narrow-to-code-block-for-editing)
+<strong class="block-title"><em><a id="keybindings-block-19" href="#keybindings-block-19">Keybindings</a></em></strong> <a href="#keybindings-block-5">+=</a></span>
+<pre class="prettyprint"><code class="">(define-key map (kbd "C-;") #'lit-mode-narrow-to-code-block-for-editing)
 </code></pre>
 </div>
 
@@ -208,7 +289,7 @@ Language-specific major modes are especially nice for things like formatting and
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="entry-function-block-17" href="#entry-function-block-17">Entry function</a></em></strong></span>
+<strong class="block-title"><em><a id="entry-function-block-21" href="#entry-function-block-21">Entry function</a></em></strong></span>
 <pre class="prettyprint"><code class="">(defun lit-mode ()
   "Major mode for editing srcweave literate files."
   (interactive)
@@ -219,25 +300,25 @@ Language-specific major modes are especially nice for things like formatting and
   (setq mode-name "Lit")
   (run-hooks 'lit-mode-hook))
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="-lit-mode.el-block-19" href="#-lit-mode.el-block-19">/lit-mode.el</a></em></strong></span>
-<pre class="prettyprint"><code class=""><em class="block-link nocode" title=""><a href="#preamble-block-21">@{Preamble}</a></em>
-<em class="block-link nocode" title=""><a href="#hooks-block-1">@{Hooks}</a></em>
-<em class="block-link nocode" title=""><a href="#keymap-block-3">@{Keymap}</a></em>
-<em class="block-link nocode" title=""><a href="#autoload-block-7">@{Autoload}</a></em>
-<em class="block-link nocode" title=""><a href="#syntax-highlighting-block-9">@{Syntax highlighting}</a></em>
-<em class="block-link nocode" title=""><a href="#indentation-block-11">@{Indentation}</a></em>
-<em class="block-link nocode" title=""><a href="#editing-a-code-block-block-13">@{Editing a code block}</a></em>
-<em class="block-link nocode" title=""><a href="#entry-function-block-17">@{Entry function}</a></em>
+<strong class="block-title"><em><a id="-lit-mode.el-block-23" href="#-lit-mode.el-block-23">/lit-mode.el</a></em></strong></span>
+<pre class="prettyprint"><code class=""><em class="block-link nocode"><a href="#preamble-block-25">@{Preamble}</a></em>
+<em class="block-link nocode"><a href="#hooks-block-1">@{Hooks}</a></em>
+<em class="block-link nocode"><a href="#keymap-block-3">@{Keymap}</a></em>
+<em class="block-link nocode"><a href="#autoload-block-7">@{Autoload}</a></em>
+<em class="block-link nocode"><a href="#syntax-highlighting-block-9">@{Syntax highlighting}</a></em>
+<em class="block-link nocode"><a href="#indentation-block-13">@{Indentation}</a></em>
+<em class="block-link nocode"><a href="#editing-a-code-block-block-15">@{Editing a code block}</a></em>
+<em class="block-link nocode"><a href="#entry-function-block-21">@{Entry function}</a></em>
 
 (provide 'lit-mode)
-<em class="block-link nocode" title=""><a href="#postamble-block-23">@{Postamble}</a></em>
+<em class="block-link nocode"><a href="#postamble-block-27">@{Postamble}</a></em>
 </code></pre>
 </div>
 
@@ -247,11 +328,11 @@ Language-specific major modes are especially nice for things like formatting and
 <h1>Preamble<a id="c8"></a></h1>
 
 
-
+<p><code>advice-add</code> requires a minimum Emacs version of 24.4, so we set that in the preamble.</p>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="preamble-block-21" href="#preamble-block-21">Preamble</a></em></strong></span>
+<strong class="block-title"><em><a id="preamble-block-25" href="#preamble-block-25">Preamble</a></em></strong></span>
 <pre class="prettyprint"><code class="">;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2022 Eric Ihli
@@ -263,7 +344,7 @@ Language-specific major modes are especially nice for things like formatting and
 ;; Version: 0.0.1
 ;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
 ;; Homepage: https://github.com/eihli/foo
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -273,17 +354,17 @@ Language-specific major modes are especially nice for things like formatting and
 ;;
 ;;; Code:
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 
 <h3>Postamble</h3>
 
 <div class="code-block">
 <span class="block-header">
-<strong class="block-title"><em><a id="postamble-block-23" href="#postamble-block-23">Postamble</a></em></strong></span>
+<strong class="block-title"><em><a id="postamble-block-27" href="#postamble-block-27">Postamble</a></em></strong></span>
 <pre class="prettyprint"><code class="">;;; lit-mode.el ends here
 </code></pre>
-<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-19" title="/lit-mode.el">1</a> </small></p></div>
+<p class="block-usages"><small>Used by <a href="#-lit-mode.el-block-23" title="/lit-mode.el">1</a> </small></p></div>
 
 </body>
 </html>

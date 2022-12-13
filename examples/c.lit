@@ -1,0 +1,18 @@
+# An scratchpad of C code.
+
+First, evaluate this in Emacs so that the code block mode is set to c.
+
+---
+(setq lit-mode-code-block-mode 'c-mode)
+---
+
+Then use the shortcut "C-;" with the cursor inside the block below to narrow the buffer to the block and get C syntax highlighting.
+
+--- /main.c
+#include <stdio>
+
+int main() {
+    printf("The downside of this is LSP errors.\n");
+    printf("Even though we narrowed, our LSP server reads the entire file.\n");
+}
+---

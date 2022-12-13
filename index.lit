@@ -39,7 +39,7 @@ If your keymap will have very few entries, then you may want to consider ‘make
 ---
 
 --- Keybindings
-(define-key map "\C-j" 'newline-and-indent)
+(define-key map (kbd "C-j") 'newline-and-indent)
 ---
 
 # Autoload
@@ -81,6 +81,25 @@ This optional argument controls whether or not we want to wrap the entire regexp
 In our case, we do.
 For example, the following expression:
 
+## Single " turning on highlighting
+
+This is best demonstrated with an image.
+
+It's hard to know when a `"` should be the start of a string that we want to highlight and when it's just a lone character that shouldn't turn on highlighting.
+I'm finding it nicer to just have it turned off.
+
+It wasn't easy to find.
+
+    (defvar font-lock-keywords-only nil
+     "Non-nil means Font Lock should not fontify comments or strings.
+     This is normally set via `font-lock-defaults'.")
+
+Although this is technically a syntax highlighting topic, I'll put this in lit-mode-hooks so it will run when the mode is activated.
+
+--- lit-mode-hooks
+(setq font-lock-keywords-only t)
+---
+
 # Indentation
 
 Indentation is very fundamental.
@@ -89,9 +108,11 @@ I'm going to default to tabs for indentation.
 --- Indentation
 (add-hook 'lit-mode-hook
           (lambda ()
+            @{lit-mode-hooks}
             (setq indent-tabs-mode t)
-			(setq indent-tabs-function #'tab-to-tab-stop)
-			(setq indent-line-function #'indent-to-left-margin)
+            (setq indent-tabs-function #'tab-to-tab-stop)
+            (setq indent-line-function #'indent-to-left-margin)
+            (setq display-line-numbers-mode t)
             (setq tab-width 4)))
 ---
 
@@ -99,6 +120,10 @@ I'm going to default to tabs for indentation.
 
 I want to be able to take advantage of major modes for whatever language I'm working with.
 Language-specific major modes are especially nice for things like formatting and alignment.
+
+This gives us syntax highlighting but gives us errors from LSP.
+
+https://emacs-lsp.github.io/lsp-mode/manual-language-docs/lsp-org/
 
 --- Editing a code block
 (defvar lit-mode-code-block-mode 'emacs-lisp-mode)
@@ -128,8 +153,52 @@ Language-specific major modes are especially nice for things like formatting and
       (funcall lit-mode-code-block-mode))))
 ---
 
+Narrowing a buffer makes it _look_ like you're only operating on a small section of a buffer.
+But any buffer configuration, like the mode line, operate on the entire buffer even if you can't see the entire buffer in your window.
+This becomes a problem if you narrow to a region of C code and then turn on c-mode.
+The mode will complain because the buffer isn't valid C.
+
+Emacs offers a `clone-indirect` that creates a copy of a buffer and changes made to one buffer get reflected in the other.
+But in hindsight. That doesn't work either.
+
+https://github.com/aaronbieber/fence-edit.el/blob/master/fence-edit.el
+
+--- Editing a code block 2
+(defvar lit-mode-code-block-mode 'c-mode)
+
+(defmacro with-indirect-buffer (beg end &rest body)
+  (let ((saved-mode major-mode))
+    `(with-current-buffer (clone-indirect-buffer nil nil)
+        (narrow-to-region beg end)
+        (funcall lit-mode-code-block-mode)
+        (unwind-protect
+            ,body
+        (kill-buffer (current-buffer))))))
+
+(defun lit-mode-points-surrounding-code-block ()
+ (save-excursion
+    (let ((beg)
+          (end))
+        (search-backward-regexp "^--- ")
+        (next-line)
+        (beginning-of-line)
+        (setq beg (point))
+        (search-forward-regexp "^---$")
+        (previous-line)
+        (end-of-line)
+        (setq end (point))
+        (cl-values beg end))))
+
+(defun lit-mode-edit-region-in-mode ()
+  (interactive "@r")
+  (let ((new-buffer (clone-indirect-buffer nil t)))
+    (cl-multiple-value-bind (beg end) (lit-mode-points-surrounding-code-block)
+        (narrow-to-region beg end)
+        (funcall lit-mode-code-block-mode))))
+---
+
 --- Keybindings +=
-(define-key map (kbd "SPC e e") #'lit-mode-narrow-to-code-block-for-editing)
+(define-key map (kbd "C-;") #'lit-mode-narrow-to-code-block-for-editing)
 ---
 
 # The entry function
@@ -164,6 +233,8 @@ Finally, we will create the function that will be called by Emacs when the mode 
 
 # Preamble
 
+`advice-add` requires a minimum Emacs version of 24.4, so we set that in the preamble.
+
 --- Preamble
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
 ;;
@@ -176,7 +247,7 @@ Finally, we will create the function that will be called by Emacs when the mode 
 ;; Version: 0.0.1
 ;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
 ;; Homepage: https://github.com/eihli/foo
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;

@@ -20,6 +20,7 @@ tutorial.
 3.  [Keymap](#c2)
 4.  [Autoload](#c3)
 5.  [Syntax highlighting](#c4)
+    1.  [Single " turning on highlighting](#s4:0)
 6.  [Indentation](#c5)
 7.  [Editing a code block](#c6)
 8.  [The entry function](#c7)
@@ -49,7 +50,7 @@ run.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
@@ -80,7 +81,7 @@ If your keymap will have very few entries, then you may want to consider
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
@@ -90,7 +91,7 @@ If your keymap will have very few entries, then you may want to consider
 ***<a href="#keybindings-block-5" id="keybindings-block-5">Keybindings</a>***</span>
 
 ``` prettyprint
-(define-key map "\C-j" 'newline-and-indent)
+(define-key map (kbd "C-j") 'newline-and-indent)
 ```
 
 <span class="small">Used by [1](#keymap-block-3 "Keymap")</span>
@@ -115,7 +116,7 @@ user.
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
@@ -137,12 +138,12 @@ id="syntax-highlighting-block-9">Syntax highlighting</a>***</span>
   (list
    '("^\\(---\\)". font-lock-doc-markup-face)
    '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
-   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
+   '("@@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
@@ -150,7 +151,8 @@ There are three elements to my list: the first element matches srcweave
 code block syntax, `---`. The second element matches the declaration of
 the reference name (the name used to include the contents of one source
 code block into another). And the third matches the *use* of the
-reference name (e.g. `@{SomeCodeBlock}`).
+reference name (e.g.
+`And the third matches the _use_ of the reference name (e.g.`@{SomeCodeBlock}`).`).
 
 I’m going to borrow some existing faces with names close-enough to what
 I want. For the open and close of a code block, I’m going to use
@@ -167,6 +169,37 @@ additional optional argument. This optional argument controls whether or
 not we want to wrap the entire regexp in parens. In our case, we do. For
 example, the following expression:
 
+## 1. Single " turning on highlighting<span id="s4:0"></span>
+
+This is best demonstrated with an image.
+
+It’s hard to know when a `"` should be the start of a string that we
+want to highlight and when it’s just a lone character that shouldn’t
+turn on highlighting. I’m finding it nicer to just have it turned off.
+
+It wasn’t easy to find.
+
+    (defvar font-lock-keywords-only nil
+     "Non-nil means Font Lock should not fontify comments or strings.
+     This is normally set via `font-lock-defaults'.")
+
+Although this is technically a syntax highlighting topic, I’ll put this
+in lit-mode-hooks so it will run when the mode is activated.
+
+<div class="code-block">
+
+<span class="block-header"> ***<a href="#lit-mode-hooks-block-11"
+id="lit-mode-hooks-block-11">lit-mode-hooks</a>***</span>
+
+``` prettyprint
+(setq font-lock-keywords-only t)
+```
+
+<span class="small">Used by
+[1](#indentation-block-13 "Indentation")</span>
+
+</div>
+
 # Indentation<span id="c5"></span>
 
 Indentation is very fundamental. I’m going to default to tabs for
@@ -174,20 +207,22 @@ indentation.
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#indentation-block-11"
-id="indentation-block-11">Indentation</a>***</span>
+<span class="block-header"> ***<a href="#indentation-block-13"
+id="indentation-block-13">Indentation</a>***</span>
 
 ``` prettyprint
 (add-hook 'lit-mode-hook
           (lambda ()
+            @{lit-mode-hooks}
             (setq indent-tabs-mode t)
             (setq indent-tabs-function #'tab-to-tab-stop)
             (setq indent-line-function #'indent-to-left-margin)
+            (setq display-line-numbers-mode t)
             (setq tab-width 4)))
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
@@ -197,10 +232,14 @@ I want to be able to take advantage of major modes for whatever language
 I’m working with. Language-specific major modes are especially nice for
 things like formatting and alignment.
 
+This gives us syntax highlighting but gives us errors from LSP.
+
+https://emacs-lsp.github.io/lsp-mode/manual-language-docs/lsp-org/
+
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#editing-a-code-block-block-13"
-id="editing-a-code-block-block-13">Editing a code block</a>***</span>
+<span class="block-header"> ***<a href="#editing-a-code-block-block-15"
+id="editing-a-code-block-block-15">Editing a code block</a>***</span>
 
 ``` prettyprint
 (defvar lit-mode-code-block-mode 'emacs-lisp-mode)
@@ -231,18 +270,73 @@ id="editing-a-code-block-block-13">Editing a code block</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
+
+</div>
+
+Narrowing a buffer makes it *look* like you’re only operating on a small
+section of a buffer. But any buffer configuration, like the mode line,
+operate on the entire buffer even if you can’t see the entire buffer in
+your window. This becomes a problem if you narrow to a region of C code
+and then turn on c-mode. The mode will complain because the buffer isn’t
+valid C.
+
+Emacs offers a `clone-indirect` that creates a copy of a buffer and
+changes made to one buffer get reflected in the other. But in hindsight.
+That doesn’t work either.
+
+https://github.com/aaronbieber/fence-edit.el/blob/master/fence-edit.el
+
+<div class="code-block">
+
+<span class="block-header">
+***<a href="#editing-a-code-block-2-block-17"
+id="editing-a-code-block-2-block-17">Editing a code block 2</a>***</span>
+
+``` prettyprint
+(defvar lit-mode-code-block-mode 'c-mode)
+
+(defmacro with-indirect-buffer (beg end &rest body)
+  (let ((saved-mode major-mode))
+    `(with-current-buffer (clone-indirect-buffer nil nil)
+        (narrow-to-region beg end)
+        (funcall lit-mode-code-block-mode)
+        (unwind-protect
+            ,body
+        (kill-buffer (current-buffer))))))
+
+(defun lit-mode-points-surrounding-code-block ()
+ (save-excursion
+    (let ((beg)
+          (end))
+        (search-backward-regexp "^--- ")
+        (next-line)
+        (beginning-of-line)
+        (setq beg (point))
+        (search-forward-regexp "^---$")
+        (previous-line)
+        (end-of-line)
+        (setq end (point))
+        (cl-values beg end))))
+
+(defun lit-mode-edit-region-in-mode ()
+  (interactive "@r")
+  (let ((new-buffer (clone-indirect-buffer nil t)))
+    (cl-multiple-value-bind (beg end) (lit-mode-points-surrounding-code-block)
+        (narrow-to-region beg end)
+        (funcall lit-mode-code-block-mode))))
+```
 
 </div>
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#keybindings-block-15"
-id="keybindings-block-15">Keybindings</a>***
+<span class="block-header"> ***<a href="#keybindings-block-19"
+id="keybindings-block-19">Keybindings</a>***
 [+=](#keybindings-block-5)</span>
 
 ``` prettyprint
-(define-key map (kbd "SPC e e") #'lit-mode-narrow-to-code-block-for-editing)
+(define-key map (kbd "C-;") #'lit-mode-narrow-to-code-block-for-editing)
 ```
 
 </div>
@@ -255,7 +349,7 @@ the mode is started.
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#entry-function-block-17" id="entry-function-block-17">Entry
+***<a href="#entry-function-block-21" id="entry-function-block-21">Entry
 function</a>***</span>
 
 ``` prettyprint
@@ -271,14 +365,14 @@ function</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
 <div class="code-block">
 
-<span class="block-header"> ***<a href="#-lit-mode.el-block-19"
-id="-lit-mode.el-block-19">/lit-mode.el</a>***</span>
+<span class="block-header"> ***<a href="#-lit-mode.el-block-23"
+id="-lit-mode.el-block-23">/lit-mode.el</a>***</span>
 
 ``` prettyprint
 @{Preamble}
@@ -298,10 +392,13 @@ id="-lit-mode.el-block-19">/lit-mode.el</a>***</span>
 
 # Preamble<span id="c8"></span>
 
+`advice-add` requires a minimum Emacs version of 24.4, so we set that in
+the preamble.
+
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#preamble-block-21" id="preamble-block-21">Preamble</a>***</span>
+***<a href="#preamble-block-25" id="preamble-block-25">Preamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el --- Description -*- lexical-binding: t; -*-
@@ -315,7 +412,7 @@ id="-lit-mode.el-block-19">/lit-mode.el</a>***</span>
 ;; Version: 0.0.1
 ;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
 ;; Homepage: https://github.com/eihli/foo
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -327,7 +424,7 @@ id="-lit-mode.el-block-19">/lit-mode.el</a>***</span>
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
 
@@ -336,13 +433,13 @@ id="-lit-mode.el-block-19">/lit-mode.el</a>***</span>
 <div class="code-block">
 
 <span class="block-header">
-***<a href="#postamble-block-23" id="postamble-block-23">Postamble</a>***</span>
+***<a href="#postamble-block-27" id="postamble-block-27">Postamble</a>***</span>
 
 ``` prettyprint
 ;;; lit-mode.el ends here
 ```
 
 <span class="small">Used by
-[1](#-lit-mode.el-block-19 "/lit-mode.el")</span>
+[1](#-lit-mode.el-block-23 "/lit-mode.el")</span>
 
 </div>
