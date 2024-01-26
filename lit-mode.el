@@ -8,7 +8,7 @@
 ;; Modified: August 02, 2022
 ;; Version: 0.0.1
 ;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
-;; Homepage: https://github.com/eihli/foo
+;; Homepage: https://github.com/eihli/lit-mode
 ;; Package-Requires: ((emacs "24.4"))
 ;;
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,7 @@
   (list
    '("^\\(---\\)". font-lock-doc-markup-face)
    '("^---[\t ]*\\([^\-\n/]+\\)" . (1 font-lock-constant-face))
-   '("@@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
+   '("@{\\([^}]+\\)}" . (1 font-lock-constant-face)))
   "Minimal highlighting expressions for lit mode.")
 (add-hook 'lit-mode-hook
           (lambda ()

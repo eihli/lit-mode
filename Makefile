@@ -4,13 +4,13 @@
 # @file
 # @version 0.1
 
-all: docs/src/lit-mode.el docs/index.html
+all: lit-mode.el docs/index.html
 
 docs/google-code-prettify:
 	srcweave-format-init docs
 
-docs/src/lit-mode.el: index.lit
-	srcweave --tangle ./docs/src/ $<
+lit-mode.el: index.lit
+	srcweave --tangle ./ $<
 
 docs/index.html README.md: index.lit
 	srcweave --weave ./docs/ --formatter srcweave-format $<
